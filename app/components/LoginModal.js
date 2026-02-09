@@ -55,12 +55,13 @@ export default function LoginModal({ onClose }) {
     >
       <div
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: "var(--bg-card)",
           borderRadius: "20px",
           padding: "32px",
           width: "100%",
           maxWidth: "400px",
           boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          border: "1px solid var(--border-primary)",
         }}
       >
         <h2
@@ -68,12 +69,12 @@ export default function LoginModal({ onClose }) {
             fontSize: "22px",
             fontWeight: 700,
             marginBottom: "4px",
-            color: "#0A0A0A",
+            color: "var(--text-primary)",
           }}
         >
           Sign in
         </h2>
-        <p style={{ fontSize: "14px", color: "#999", marginBottom: "24px" }}>
+        <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "24px" }}>
           Use a demo account to explore SafeThreads
         </p>
 
@@ -86,17 +87,17 @@ export default function LoginModal({ onClose }) {
             style={{
               width: "100%",
               padding: "12px 14px",
-              border: "1px solid #E5E5E5",
+              border: "1px solid var(--border-input)",
               borderRadius: "10px",
               fontSize: "15px",
-              color: "#1A1A1A",
-              backgroundColor: "#FAFAFA",
+              color: "var(--text-secondary)",
+              backgroundColor: "var(--bg-input)",
               outline: "none",
               marginBottom: "10px",
               boxSizing: "border-box",
             }}
-            onFocus={(e) => (e.target.style.borderColor = "#0A0A0A")}
-            onBlur={(e) => (e.target.style.borderColor = "#E5E5E5")}
+            onFocus={(e) => (e.target.style.borderColor = "var(--text-primary)")}
+            onBlur={(e) => (e.target.style.borderColor = "var(--border-input)")}
           />
           <input
             type="password"
@@ -106,17 +107,17 @@ export default function LoginModal({ onClose }) {
             style={{
               width: "100%",
               padding: "12px 14px",
-              border: "1px solid #E5E5E5",
+              border: "1px solid var(--border-input)",
               borderRadius: "10px",
               fontSize: "15px",
-              color: "#1A1A1A",
-              backgroundColor: "#FAFAFA",
+              color: "var(--text-secondary)",
+              backgroundColor: "var(--bg-input)",
               outline: "none",
               marginBottom: "16px",
               boxSizing: "border-box",
             }}
-            onFocus={(e) => (e.target.style.borderColor = "#0A0A0A")}
-            onBlur={(e) => (e.target.style.borderColor = "#E5E5E5")}
+            onFocus={(e) => (e.target.style.borderColor = "var(--text-primary)")}
+            onBlur={(e) => (e.target.style.borderColor = "var(--border-input)")}
           />
 
           {error && (
@@ -140,8 +141,8 @@ export default function LoginModal({ onClose }) {
               borderRadius: "10px",
               border: "none",
               backgroundColor:
-                !username || !password || loading ? "#E5E5E5" : "#0A0A0A",
-              color: !username || !password || loading ? "#999" : "#fff",
+                !username || !password || loading ? "var(--btn-disabled-bg)" : "var(--btn-primary-bg)",
+              color: !username || !password || loading ? "var(--btn-disabled-text)" : "var(--btn-primary-text)",
               fontSize: "15px",
               fontWeight: 600,
               cursor:
@@ -156,14 +157,14 @@ export default function LoginModal({ onClose }) {
         {/* Quick login buttons */}
         <div
           style={{
-            borderTop: "1px solid #F0F0F0",
+            borderTop: "1px solid var(--border-divider)",
             paddingTop: "16px",
           }}
         >
           <p
             style={{
               fontSize: "12px",
-              color: "#999",
+              color: "var(--text-muted)",
               marginBottom: "10px",
               fontWeight: 500,
               textTransform: "uppercase",
@@ -194,9 +195,9 @@ export default function LoginModal({ onClose }) {
                   justifyContent: "space-between",
                   padding: "10px 14px",
                   borderRadius: "10px",
-                  border: "1px solid #E5E5E5",
+                  border: "1px solid var(--border-input)",
                   backgroundColor:
-                    username === acct.u ? "#F5F5F5" : "#FAFAFA",
+                    username === acct.u ? "var(--bg-hover)" : "var(--bg-input)",
                   cursor: "pointer",
                   transition: "all 0.15s",
                 }}
@@ -205,12 +206,12 @@ export default function LoginModal({ onClose }) {
                   style={{
                     fontSize: "14px",
                     fontWeight: 500,
-                    color: "#1A1A1A",
+                    color: "var(--text-secondary)",
                   }}
                 >
                   {acct.name}
                 </span>
-                <span style={{ fontSize: "12px", color: "#999" }}>
+                <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                   {acct.u} / {acct.p}
                 </span>
               </button>

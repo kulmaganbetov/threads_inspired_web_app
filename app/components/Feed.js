@@ -40,7 +40,7 @@ export default function Feed() {
       <div
         style={{
           height: "1px",
-          backgroundColor: "#EFEFEF",
+          backgroundColor: "var(--border-divider)",
           margin: "4px 0",
         }}
       />
@@ -50,7 +50,7 @@ export default function Feed() {
           style={{
             textAlign: "center",
             padding: "40px 0",
-            color: "#999",
+            color: "var(--text-muted)",
             fontSize: "14px",
           }}
         >
@@ -61,7 +61,7 @@ export default function Feed() {
           style={{
             textAlign: "center",
             padding: "40px 0",
-            color: "#999",
+            color: "var(--text-muted)",
             fontSize: "14px",
           }}
         >
@@ -75,8 +75,8 @@ export default function Feed() {
             gap: "12px",
           }}
         >
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} onUpdate={fetchPosts} />
+          {posts.map((post, i) => (
+            <PostCard key={post.id} post={post} onUpdate={fetchPosts} animDelay={i * 60} />
           ))}
         </div>
       )}

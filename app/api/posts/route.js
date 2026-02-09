@@ -2,10 +2,6 @@ import { NextResponse } from "next/server";
 import { classify } from "@/lib/classifier";
 import { getAllPosts, addPost, getUserByToken, isBlocked } from "@/lib/store";
 
-/**
- * GET /api/posts
- * Returns all posts with moderation labels, likes, and comments.
- */
 export async function GET() {
   const posts = getAllPosts();
   return NextResponse.json({ posts });
@@ -13,16 +9,9 @@ export async function GET() {
 
 /**
  * POST /api/posts
- * Creates a new post. Requires authentication.
- * Content is classified by mock ML. If classified as harmful
- * (Hate speech, Extremism, Cyberbullying, Fraud / Scam), the
- * post is BLOCKED and not saved.
- *
- * Header: Authorization: Bearer <token>
- * Body: { text: string }
+ * Body: { text: string, media?: string (base64 data URL) }
  */
 export async function POST(request) {
-  // Auth check
   const auth = request.headers.get("authorization");
   const token = auth?.replace("Bearer ", "");
   const user = getUserByToken(token);
@@ -36,26 +25,40 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const { text } = body;
+    const { text, media } = body;
 
-    if (!text || typeof text !== "string" || text.trim().length === 0) {
+    if ((!text || typeof text !== "string" || text.trim().length === 0) && !media) {
       return NextResponse.json(
-        { error: "Post text is required and must be a non-empty string." },
+        { error: "Post must have text or an image." },
         { status: 400 }
       );
     }
 
-    if (text.length > 500) {
+    if (text && text.length > 500) {
       return NextResponse.json(
         { error: "Post text must be 500 characters or fewer." },
         { status: 400 }
       );
     }
 
-    // Run mock ML classification
-    const moderation = classify(text);
+    // Validate media if provided (must be data URL, max ~5MB)
+    if (media) {
+      if (typeof media !== "string" || !media.startsWith("data:image/")) {
+        return NextResponse.json(
+          { error: "Invalid image format." },
+          { status: 400 }
+        );
+      }
+      if (media.length > 5 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: "Image must be smaller than 5MB." },
+          { status: 400 }
+        );
+      }
+    }
 
-    // Block harmful content
+    const moderation = text ? classify(text) : { label: "Neutral", confidence: 1.0 };
+
     if (isBlocked(moderation.label)) {
       return NextResponse.json(
         {
@@ -67,12 +70,12 @@ export async function POST(request) {
       );
     }
 
-    // Persist (in-memory)
     const post = addPost({
-      text: text.trim(),
+      text: text?.trim() || "",
       authorId: user.id,
       author: user.displayName,
       moderation,
+      media: media || null,
     });
 
     return NextResponse.json({ post }, { status: 201 });

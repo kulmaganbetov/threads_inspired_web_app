@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { AuthProvider, useAuth } from "../components/AuthContext";
+import { ThemeProvider } from "../components/ThemeContext";
 import Header from "../components/Header";
 import PostCard from "../components/PostCard";
 
@@ -36,7 +37,7 @@ function ProfileContent() {
         style={{
           textAlign: "center",
           padding: "60px 20px",
-          color: "#999",
+          color: "var(--text-muted)",
           fontSize: "14px",
         }}
       >
@@ -57,13 +58,13 @@ function ProfileContent() {
           style={{
             fontSize: "20px",
             fontWeight: 700,
-            color: "#0A0A0A",
+            color: "var(--text-primary)",
             marginBottom: "8px",
           }}
         >
           Not signed in
         </h2>
-        <p style={{ fontSize: "15px", color: "#666", marginBottom: "20px" }}>
+        <p style={{ fontSize: "15px", color: "var(--text-tertiary)", marginBottom: "20px" }}>
           Sign in to view your profile
         </p>
         <a
@@ -72,8 +73,8 @@ function ProfileContent() {
             display: "inline-block",
             padding: "10px 24px",
             borderRadius: "10px",
-            backgroundColor: "#0A0A0A",
-            color: "#fff",
+            backgroundColor: "var(--btn-primary-bg)",
+            color: "var(--btn-primary-text)",
             fontSize: "14px",
             fontWeight: 600,
             textDecoration: "none",
@@ -107,11 +108,11 @@ function ProfileContent() {
       {/* Profile card */}
       <div
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: "var(--bg-card)",
           borderRadius: "16px",
           padding: "28px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
-          border: "1px solid #F0F0F0",
+          boxShadow: "var(--shadow-card)",
+          border: "1px solid var(--border-primary)",
           marginBottom: "24px",
         }}
       >
@@ -145,7 +146,7 @@ function ProfileContent() {
               style={{
                 fontSize: "22px",
                 fontWeight: 700,
-                color: "#0A0A0A",
+                color: "var(--text-primary)",
                 margin: 0,
               }}
             >
@@ -154,7 +155,7 @@ function ProfileContent() {
             <p
               style={{
                 fontSize: "14px",
-                color: "#999",
+                color: "var(--text-muted)",
                 margin: "2px 0 0 0",
               }}
             >
@@ -167,7 +168,7 @@ function ProfileContent() {
           <p
             style={{
               fontSize: "15px",
-              color: "#333",
+              color: "var(--text-secondary)",
               lineHeight: 1.5,
               marginBottom: "20px",
             }}
@@ -176,7 +177,7 @@ function ProfileContent() {
           </p>
         )}
 
-        <p style={{ fontSize: "13px", color: "#999", marginBottom: "20px" }}>
+        <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "20px" }}>
           Joined{" "}
           {new Date(user.joinedAt).toLocaleDateString("en-US", {
             month: "long",
@@ -190,7 +191,7 @@ function ProfileContent() {
             display: "flex",
             gap: "24px",
             paddingTop: "16px",
-            borderTop: "1px solid #F0F0F0",
+            borderTop: "1px solid var(--border-divider)",
           }}
         >
           <div style={{ textAlign: "center" }}>
@@ -198,12 +199,12 @@ function ProfileContent() {
               style={{
                 fontSize: "20px",
                 fontWeight: 700,
-                color: "#0A0A0A",
+                color: "var(--text-primary)",
               }}
             >
               {stats.postsCount || 0}
             </div>
-            <div style={{ fontSize: "12px", color: "#999", marginTop: "2px" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>
               Posts
             </div>
           </div>
@@ -212,12 +213,12 @@ function ProfileContent() {
               style={{
                 fontSize: "20px",
                 fontWeight: 700,
-                color: "#0A0A0A",
+                color: "var(--text-primary)",
               }}
             >
               {stats.likesReceived || 0}
             </div>
-            <div style={{ fontSize: "12px", color: "#999", marginTop: "2px" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>
               Likes
             </div>
           </div>
@@ -226,12 +227,12 @@ function ProfileContent() {
               style={{
                 fontSize: "20px",
                 fontWeight: 700,
-                color: "#0A0A0A",
+                color: "var(--text-primary)",
               }}
             >
               {stats.commentsReceived || 0}
             </div>
-            <div style={{ fontSize: "12px", color: "#999", marginTop: "2px" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>
               Comments
             </div>
           </div>
@@ -243,7 +244,7 @@ function ProfileContent() {
         style={{
           fontSize: "16px",
           fontWeight: 600,
-          color: "#0A0A0A",
+          color: "var(--text-primary)",
           marginBottom: "12px",
         }}
       >
@@ -255,18 +256,18 @@ function ProfileContent() {
           style={{
             textAlign: "center",
             padding: "40px 20px",
-            color: "#999",
+            color: "var(--text-muted)",
             fontSize: "14px",
-            backgroundColor: "#fff",
+            backgroundColor: "var(--bg-card)",
             borderRadius: "16px",
-            border: "1px solid #F0F0F0",
+            border: "1px solid var(--border-primary)",
           }}
         >
           You haven&apos;t posted anything yet.{" "}
           <a
             href="/"
             style={{
-              color: "#0A0A0A",
+              color: "var(--text-primary)",
               fontWeight: 600,
               textDecoration: "underline",
             }}
@@ -282,8 +283,8 @@ function ProfileContent() {
             gap: "12px",
           }}
         >
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} onUpdate={fetchProfile} />
+          {posts.map((post, i) => (
+            <PostCard key={post.id} post={post} onUpdate={fetchProfile} animDelay={i * 60} />
           ))}
         </div>
       )}
@@ -293,31 +294,33 @@ function ProfileContent() {
 
 export default function ProfilePage() {
   return (
-    <AuthProvider>
-      <div
-        style={{
-          minHeight: "100dvh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Header />
-        <main style={{ flex: 1 }}>
-          <ProfileContent />
-        </main>
-        <footer
+    <ThemeProvider>
+      <AuthProvider>
+        <div
           style={{
-            textAlign: "center",
-            padding: "20px",
-            borderTop: "1px solid #EFEFEF",
-            fontSize: "12px",
-            color: "#999",
+            minHeight: "100dvh",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          SafeThreads &mdash; Mock ML Content Moderation Demo &middot; Built
-          with Next.js
-        </footer>
-      </div>
-    </AuthProvider>
+          <Header />
+          <main style={{ flex: 1 }}>
+            <ProfileContent />
+          </main>
+          <footer
+            style={{
+              textAlign: "center",
+              padding: "20px",
+              borderTop: "1px solid var(--border-divider)",
+              fontSize: "12px",
+              color: "var(--text-muted)",
+            }}
+          >
+            SafeThreads &mdash; Mock ML Content Moderation Demo &middot; Built
+            with Next.js
+          </footer>
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
