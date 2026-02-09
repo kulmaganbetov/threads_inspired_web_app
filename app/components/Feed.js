@@ -4,11 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import PostComposer from "./PostComposer";
 import PostCard from "./PostCard";
 
-/**
- * Feed — the main feed component that fetches posts, renders the
- * composer, and displays all posts with their moderation badges.
- */
-
 export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +14,7 @@ export default function Feed() {
       const data = await res.json();
       setPosts(data.posts || []);
     } catch {
-      // Silently fail — feed will show empty state
+      // Silently fail
     } finally {
       setLoading(false);
     }
@@ -40,10 +35,8 @@ export default function Feed() {
         margin: "0 auto",
       }}
     >
-      {/* Composer */}
       <PostComposer onPostCreated={fetchPosts} />
 
-      {/* Divider */}
       <div
         style={{
           height: "1px",
@@ -52,7 +45,6 @@ export default function Feed() {
         }}
       />
 
-      {/* Feed */}
       {loading ? (
         <div
           style={{
@@ -84,7 +76,7 @@ export default function Feed() {
           }}
         >
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} onUpdate={fetchPosts} />
           ))}
         </div>
       )}

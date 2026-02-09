@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { classify } from "@/lib/classifier";
-import { getAllPosts, addPost } from "@/lib/store";
+import { getAllPosts, addPost, getUserByToken, isBlocked } from "@/lib/store";
 
 /**
  * GET /api/posts
- * Returns all posts with their moderation labels, newest first.
+ * Returns all posts with moderation labels, likes, and comments.
  */
 export async function GET() {
   const posts = getAllPosts();
@@ -13,19 +13,31 @@ export async function GET() {
 
 /**
  * POST /api/posts
- * Creates a new post. The request body must include `text` and
- * optionally `author`. The mock ML classifier runs on the text
- * and the moderation result is attached to the post.
+ * Creates a new post. Requires authentication.
+ * Content is classified by mock ML. If classified as harmful
+ * (Hate speech, Extremism, Cyberbullying, Fraud / Scam), the
+ * post is BLOCKED and not saved.
  *
- * Body: { text: string, author?: string }
- * Returns: the created post with moderation label + confidence.
+ * Header: Authorization: Bearer <token>
+ * Body: { text: string }
  */
 export async function POST(request) {
+  // Auth check
+  const auth = request.headers.get("authorization");
+  const token = auth?.replace("Bearer ", "");
+  const user = getUserByToken(token);
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "You must be logged in to create a post." },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await request.json();
-    const { text, author } = body;
+    const { text } = body;
 
-    // Validate input
     if (!text || typeof text !== "string" || text.trim().length === 0) {
       return NextResponse.json(
         { error: "Post text is required and must be a non-empty string." },
@@ -43,10 +55,23 @@ export async function POST(request) {
     // Run mock ML classification
     const moderation = classify(text);
 
+    // Block harmful content
+    if (isBlocked(moderation.label)) {
+      return NextResponse.json(
+        {
+          error: `Post blocked by content moderation: classified as "${moderation.label}" (${Math.round(moderation.confidence * 100)}% confidence). This type of content is not allowed.`,
+          moderation,
+          blocked: true,
+        },
+        { status: 403 }
+      );
+    }
+
     // Persist (in-memory)
     const post = addPost({
       text: text.trim(),
-      author: author?.trim() || "Anonymous",
+      authorId: user.id,
+      author: user.displayName,
       moderation,
     });
 
